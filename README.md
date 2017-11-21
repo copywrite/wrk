@@ -1,6 +1,6 @@
-# wrk - a HTTP benchmarking tool
+# yak - a HTTP and TCP benchmarking tool copied and wrote from wrk
 
-  wrk is a modern HTTP benchmarking tool capable of generating significant
+  yak is a modern HTTP and TCP benchmarking tool capable of generating significant
   load when run on a single multi-core CPU. It combines a multithreaded
   design with scalable event notification systems such as epoll and kqueue.
 
@@ -10,7 +10,7 @@
 
 ## Basic Usage
 
-    wrk -t12 -c400 -d30s http://127.0.0.1:8080/index.html
+    yak -t12 -c400 -d30s http://127.0.0.1:8080/index.html
 
   This runs a benchmark for 30 seconds, using 12 threads, and keeping
   400 HTTP connections open.
@@ -37,7 +37,7 @@
 
     -s, --script:      LuaJIT script, see SCRIPTING
 
-    -H, --header:      HTTP header to add to request, e.g. "User-Agent: wrk"
+    -H, --header:      HTTP header to add to request, e.g. "User-Agent: yak"
 
         --latency:     print detailed latency statistics
 
@@ -46,7 +46,7 @@
 
 ## Benchmarking Tips
 
-  The machine running wrk must have a sufficient number of ephemeral ports
+  The machine running yak must have a sufficient number of ephemeral ports
   available and closed sockets should be recycled quickly. To handle the
   initial connection burst the server's listen(2) backlog should be greater
   than the number of concurrent connections being tested.
@@ -58,7 +58,7 @@
 
 ## Acknowledgements
 
-  wrk contains code from a number of open source projects including the
+  yak contains code from a number of open source projects including the
   'ae' event loop from redis, the nginx/joyent/node.js 'http-parser',
   and Mike Pall's LuaJIT. Please consult the NOTICE file for licensing
   details.

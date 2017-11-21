@@ -3,7 +3,6 @@
 -------------------------------------------------------------
 -- NOTE: each wrk thread has an independent Lua scripting
 -- context and thus there will be one counter per thread
-
 counter = -1
 
 request = function()
