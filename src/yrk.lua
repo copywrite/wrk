@@ -1,6 +1,6 @@
 -- require 'struct'
 
-local wrk = {
+local yrk = {
    scheme  = "http",
    host    = "localhost",
    port    = nil,
@@ -225,40 +225,40 @@ function dump(o)
    end
 end
 
-function wrk.resolve(host, service)
-   local addrs = wrk.lookup(host, service)
+function yrk.resolve(host, service)
+   local addrs = yrk.lookup(host, service)
    for i = #addrs, 1, -1 do
-      if not wrk.connect(addrs[i]) then
+      if not yrk.connect(addrs[i]) then
          table.remove(addrs, i)
       end
    end
-   wrk.addrs = addrs
+   yrk.addrs = addrs
 end
 
-function wrk.setup(thread)
-   thread.addr = wrk.addrs[1]
+function yrk.setup(thread)
+   thread.addr = yrk.addrs[1]
    if type(setup) == "function" then
       setup(thread)
    end
 end
 
-function wrk.init(args)
-   if not wrk.headers["Host"] then
-      local host = wrk.host
-      local port = wrk.port
+function yrk.init(args)
+   if not yrk.headers["Host"] then
+      local host = yrk.host
+      local port = yrk.port
 
       host = host:find(":") and ("[" .. host .. "]")  or host
       host = port           and (host .. ":" .. port) or host
 
-      wrk.headers["Host"] = host
+      yrk.headers["Host"] = host
    end
 
    if type(init) == "function" then
       init(args)
    end
 
-   local req = wrk.format()
-   wrk.request = function()
+   local req = yrk.format()
+   yrk.request = function()
       return req
    end
 end
@@ -290,16 +290,16 @@ function hex_dump (str)
             .. string.rep( "   ", 8 - len % 8 ) .. asc
 end
 
-function wrk.format(method, path, headers, body)
-   local method  = method  or wrk.method
-   local path    = path    or wrk.path
-   local headers = headers or wrk.headers
-   local body    = body    or wrk.body
+function yrk.format(method, path, headers, body)
+   local method  = method  or yrk.method
+   local path    = path    or yrk.path
+   local headers = headers or yrk.headers
+   local body    = body    or yrk.body
    local s       = {}
 
    if not headers['raw'] then
       if not headers["Host"] then
-        headers["Host"] = wrk.headers["Host"]
+        headers["Host"] = yrk.headers["Host"]
       end
 
       headers["Content-Length"] = body and string.len(body)
@@ -319,4 +319,4 @@ function wrk.format(method, path, headers, body)
    
 end
 
-return wrk
+return yrk

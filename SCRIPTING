@@ -1,14 +1,14 @@
 Overview
 
-  wrk supports executing a LuaJIT script during three distinct phases: setup,
-  running, and done. Each wrk thread has an independent scripting environment
+  yrk supports executing a LuaJIT script during three distinct phases: setup,
+  running, and done. Each yrk thread has an independent scripting environment
   and the setup & done phases execute in a separate environment which does
   not participate in the running phase.
 
   The public Lua API consists of a global table and a number of global
   functions:
 
-  wrk = {
+  yrk = {
     scheme  = "http",
     host    = "localhost",
     port    = nil,
@@ -19,20 +19,20 @@ Overview
     thread  = <userdata>,
   }
 
-  function wrk.format(method, path, headers, body)
+  function yrk.format(method, path, headers, body)
 
-    wrk.format returns a HTTP request string containing the passed parameters
-    merged with values from the wrk table.
+    yrk.format returns a HTTP request string containing the passed parameters
+    merged with values from the yrk table.
 
-  function wrk.lookup(host, service)
+  function yrk.lookup(host, service)
 
-    wrk.lookup returns a table containing all known addresses for the host
+    yrk.lookup returns a table containing all known addresses for the host
     and service pair. This corresponds to the POSIX getaddrinfo() function.
 
-  function wrk.connect(addr)
+  function yrk.connect(addr)
 
-    wrk.connect returns true if the address can be connected to, otherwise
-    it returns false. The address must be one returned from wrk.lookup().
+    yrk.connect returns true if the address can be connected to, otherwise
+    it returns false. The address must be one returned from yrk.lookup().
 
   The following globals are optional, and if defined must be functions:
 
@@ -73,7 +73,7 @@ Running
   a call to request() and response() for each request cycle.
 
   The init() function receives any extra command line arguments for the
-  script which must be separated from wrk arguments with "--".
+  script which must be separated from yrk arguments with "--".
 
   delay() returns the number of milliseconds to delay sending the next
   request.
@@ -85,7 +85,7 @@ Running
 
   response() is called with the HTTP response status, headers, and body.
   Parsing the headers and body is expensive, so if the response global is
-  nil after the call to init() wrk will ignore the headers and body.
+  nil after the call to init() yrk will ignore the headers and body.
 
 Done
 

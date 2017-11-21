@@ -2,18 +2,18 @@ master
 
  * Require OpenSSL 1.1.0+
 
-wrk 4.0.2
+yrk 4.0.2
 
  * Send hostname using TLS SNI.
  * Add optional WITH_OPENSSL and WITH_LUAJIT to use system libs.
  * Bundle OpenSSL 1.0.2.
  * delay() can return milliseconds to delay sending next request.
 
-wrk 4.0.0
+yrk 4.0.0
 
- * The wrk global variable is the only global defined by default.
- * wrk.init() calls the global init(), remove calls to wrk.init().
- * Add wrk.lookup(host, port) and wrk.connect(addr) functions.
+ * The yrk global variable is the only global defined by default.
+ * yrk.init() calls the global init(), remove calls to yrk.init().
+ * Add yrk.lookup(host, port) and yrk.connect(addr) functions.
  * Add setup phase that calls the global setup() for each thread.
  * Allow assignment to thread.addr to specify the server address.
  * Add thread:set(name, value), thread:get(name), and thread:stop().

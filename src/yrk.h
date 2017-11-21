@@ -1,5 +1,5 @@
-#ifndef WRK_H
-#define WRK_H
+#ifndef yrk_H
+#define yrk_H
 
 #include "config.h"
 #include <pthread.h>
@@ -63,4 +63,4 @@ typedef struct connection {
     char buf[RECVBUF];
 } connection;
 
-#endif /* WRK_H */
+#endif /* yrk_H */

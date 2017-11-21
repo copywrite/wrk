@@ -1,4 +1,4 @@
-# yak - a HTTP and TCP benchmarking tool copied and wrote from wrk
+# yak - a HTTP and TCP benchmarking tool copied and wrote from yrk
 
   yak is a modern HTTP and TCP benchmarking tool capable of generating significant
   load when run on a single multi-core CPU. It combines a multithreaded
@@ -10,7 +10,7 @@
 
 ## TCP Basic Usage
 
-    wrk -t12 -c400 -d30s http://127.0.0.1:8080/index.html -s scripts/counter.lua
+    yrk -t12 -c400 -d30s http://127.0.0.1:8080/index.html -s scripts/counter.lua
 
   You could build your TCP payload in request function  
 
@@ -30,7 +30,7 @@
 
 ## HTTP Basic Usage
 
-    wrk -t12 -c400 -d30s http://127.0.0.1:8080/index.html
+    yrk -t12 -c400 -d30s http://127.0.0.1:8080/index.html
 
   This runs a benchmark for 30 seconds, using 12 threads, and keeping
   400 HTTP connections open.

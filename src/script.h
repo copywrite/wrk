@@ -7,7 +7,7 @@
 #include <luajit-2.0/lauxlib.h>
 #include <unistd.h>
 #include "stats.h"
-#include "wrk.h"
+#include "yrk.h"
 
 lua_State *script_create(char *, char *, char **, bool);
 

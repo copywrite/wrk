@@ -1,6 +1,6 @@
 // Copyright (C) 2012 - Will Glozer.  All rights reserved.
 
-#include "wrk.h"
+#include "yrk.h"
 #include "script.h"
 #include "main.h"
 
@@ -43,7 +43,7 @@ static void handler(int sig) {
 }
 
 static void usage() {
-    printf("Usage: wrk <options> <url>                            \n"
+    printf("Usage: yrk <options> <url>                            \n"
            "  Options:                                            \n"
            "    -c, --connections <N>  Connections to keep open   \n"
            "    -d, --duration    <T>  Duration of test           \n"
@@ -517,7 +517,7 @@ static int parse_args(struct config *cfg, char **url, struct http_parser_url *pa
                 cfg->timeout *= 1000;
                 break;
             case 'v':
-                printf("wrk %s [%s] ", VERSION, aeGetApiName());
+                printf("yrk %s [%s] ", VERSION, aeGetApiName());
                 printf("Copyright (C) 2012 Will Glozer\n");
                 break;
             case 'r':

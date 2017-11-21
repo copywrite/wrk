@@ -17,9 +17,9 @@ else ifeq ($(TARGET), freebsd)
 	LDFLAGS += -Wl,-E
 endif
 
-SRC  := wrk.c net.c ssl.c aprintf.c stats.c script.c units.c \
+SRC  := yrk.c net.c ssl.c aprintf.c stats.c script.c units.c \
 		ae.c zmalloc.c http_parser.c
-BIN  := wrk
+BIN  := yrk
 VER  ?= $(shell git describe --tags --always --dirty)
 
 ODIR := obj
@@ -58,7 +58,7 @@ $(OBJ): config.h Makefile $(DEPS) | $(ODIR)
 $(ODIR):
 	@mkdir -p $@
 
-$(ODIR)/bytecode.o: src/wrk.lua
+$(ODIR)/bytecode.o: src/yrk.lua
 	@echo LUAJIT $<
 	@$(SHELL) -c 'PATH=obj/bin:$(PATH) luajit -b $(CURDIR)/$< $(CURDIR)/$@'
 

@@ -20,7 +20,7 @@ end
 
 function request()
    requests = requests + 1
-   return wrk.request()
+   return yrk.request()
 end
 
 function response(status, headers, body)

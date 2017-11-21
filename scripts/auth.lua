@@ -6,13 +6,13 @@ token = nil
 path  = "/authenticate"
 
 request = function()
-   return wrk.format("GET", path)
+   return yrk.format("GET", path)
 end
 
 response = function(status, headers, body)
    if not token and status == 200 then
       token = headers["X-Token"]
       path  = "/resource"
-      wrk.headers["X-Token"] = token
+      yrk.headers["X-Token"] = token
    end
 end

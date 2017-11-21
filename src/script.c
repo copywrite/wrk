@@ -19,8 +19,8 @@ static int script_stats_len(lua_State *);
 static int script_stats_index(lua_State *);
 static int script_thread_index(lua_State *);
 static int script_thread_newindex(lua_State *);
-static int script_wrk_lookup(lua_State *);
-static int script_wrk_connect(lua_State *);
+static int script_yrk_lookup(lua_State *);
+static int script_yrk_connect(lua_State *);
 
 static void set_fields(lua_State *, int, const table_field *);
 static void set_field(lua_State *, int, char *, int);
@@ -48,13 +48,13 @@ static const struct luaL_reg threadlib[] = {
 lua_State *script_create(char *file, char *url, char **headers, bool raw) {
     lua_State *L = luaL_newstate();
     luaL_openlibs(L);
-    (void) luaL_dostring(L, "wrk = require \"wrk\"");
+    (void) luaL_dostring(L, "yrk = require \"yrk\"");
 
-    luaL_newmetatable(L, "wrk.addr");
+    luaL_newmetatable(L, "yrk.addr");
     luaL_register(L, NULL, addrlib);
-    luaL_newmetatable(L, "wrk.stats");
+    luaL_newmetatable(L, "yrk.stats");
     luaL_register(L, NULL, statslib);
-    luaL_newmetatable(L, "wrk.thread");
+    luaL_newmetatable(L, "yrk.thread");
     luaL_register(L, NULL, threadlib);
 
     struct http_parser_url parts = {};
@@ -67,14 +67,14 @@ lua_State *script_create(char *file, char *url, char **headers, bool raw) {
     }
 
     const table_field fields[] = {
-        { "lookup",  LUA_TFUNCTION, script_wrk_lookup  },
-        { "connect", LUA_TFUNCTION, script_wrk_connect },
+        { "lookup",  LUA_TFUNCTION, script_yrk_lookup  },
+        { "connect", LUA_TFUNCTION, script_yrk_connect },
         { "path",    LUA_TSTRING,   path               },
         { "raw",     LUA_TSTRING,   tcp                },
         { NULL,      0,             NULL               },
     };
 
-    lua_getglobal(L, "wrk");
+    lua_getglobal(L, "yrk");
 
     set_field(L, 4, "scheme", push_url_part(L, url, &parts, UF_SCHEMA));
     set_field(L, 4, "host",   push_url_part(L, url, &parts, UF_HOST));
@@ -101,7 +101,7 @@ lua_State *script_create(char *file, char *url, char **headers, bool raw) {
 }
 
 bool script_resolve(lua_State *L, char *host, char *service) {
-    lua_getglobal(L, "wrk");
+    lua_getglobal(L, "yrk");
 
     lua_getfield(L, -1, "resolve");
     lua_pushstring(L, host);
@@ -117,17 +117,17 @@ bool script_resolve(lua_State *L, char *host, char *service) {
 void script_push_thread(lua_State *L, thread *t) {
     thread **ptr = (thread **) lua_newuserdata(L, sizeof(thread **));
     *ptr = t;
-    luaL_getmetatable(L, "wrk.thread");
+    luaL_getmetatable(L, "yrk.thread");
     lua_setmetatable(L, -2);
 }
 
 void script_init(lua_State *L, thread *t, int argc, char **argv) {
-    lua_getglobal(t->L, "wrk");
+    lua_getglobal(t->L, "yrk");
 
     script_push_thread(t->L, t);
     lua_setfield(t->L, -2, "thread");
 
-    lua_getglobal(L, "wrk");
+    lua_getglobal(L, "yrk");
     lua_getfield(L, -1, "setup");
     script_push_thread(L, t);
     lua_call(L, 1, 0);
@@ -155,7 +155,7 @@ void script_request(lua_State *L, char **buf, size_t *len) {
     int pop = 1;
     lua_getglobal(L, "request");
     if (!lua_isfunction(L, -1)) {
-        lua_getglobal(L, "wrk");
+        lua_getglobal(L, "yrk");
         lua_getfield(L, -1, "request");
         pop += 2;
     }
@@ -246,7 +246,7 @@ void script_errors(lua_State *L, errors *errors) {
 void script_push_stats(lua_State *L, stats *s) {
     stats **ptr = (stats **) lua_newuserdata(L, sizeof(stats **));
     *ptr = s;
-    luaL_getmetatable(L, "wrk.stats");
+    luaL_getmetatable(L, "yrk.stats");
     lua_setmetatable(L, -2);
 }
 
@@ -304,7 +304,7 @@ size_t script_verify_request(lua_State *L) {
 }
 
 static struct addrinfo *checkaddr(lua_State *L) {
-    struct addrinfo *addr = luaL_checkudata(L, -1, "wrk.addr");
+    struct addrinfo *addr = luaL_checkudata(L, -1, "yrk.addr");
     luaL_argcheck(L, addr != NULL, 1, "`addr' expected");
     return addr;
 }
@@ -317,7 +317,7 @@ void script_addr_copy(struct addrinfo *src, struct addrinfo *dst) {
 
 struct addrinfo *script_addr_clone(lua_State *L, struct addrinfo *addr) {
     struct addrinfo *udata = lua_newuserdata(L, sizeof(*udata));
-    luaL_getmetatable(L, "wrk.addr");
+    luaL_getmetatable(L, "yrk.addr");
     lua_setmetatable(L, -2);
     script_addr_copy(addr, udata);
     return udata;
@@ -346,7 +346,7 @@ static int script_addr_gc(lua_State *L) {
 }
 
 static stats *checkstats(lua_State *L) {
-    stats **s = luaL_checkudata(L, 1, "wrk.stats");
+    stats **s = luaL_checkudata(L, 1, "yrk.stats");
     luaL_argcheck(L, s != NULL, 1, "`stats' expected");
     return *s;
 }
@@ -387,7 +387,7 @@ static int script_stats_len(lua_State *L) {
 }
 
 static thread *checkthread(lua_State *L) {
-    thread **t = luaL_checkudata(L, 1, "wrk.thread");
+    thread **t = luaL_checkudata(L, 1, "yrk.thread");
     luaL_argcheck(L, t != NULL, 1, "`thread' expected");
     return *t;
 }
@@ -439,7 +439,7 @@ static int script_thread_newindex(lua_State *L) {
     return 0;
 }
 
-static int script_wrk_lookup(lua_State *L) {
+static int script_yrk_lookup(lua_State *L) {
     struct addrinfo *addrs;
     struct addrinfo hints = {
         .ai_family   = AF_UNSPEC,
@@ -466,7 +466,7 @@ static int script_wrk_lookup(lua_State *L) {
     return 1;
 }
 
-static int script_wrk_connect(lua_State *L) {
+static int script_yrk_connect(lua_State *L) {
     struct addrinfo *addr = checkaddr(L);
     int fd, connected = 0;
     if ((fd = socket(addr->ai_family, addr->ai_socktype, addr->ai_protocol)) != -1) {

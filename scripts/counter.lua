@@ -1,23 +1,23 @@
 -- example dynamic request script which demonstrates changing
 -- the request path and a header for each request
 -------------------------------------------------------------
--- NOTE: each wrk thread has an independent Lua scripting
+-- NOTE: each yrk thread has an independent Lua scripting
 -- context and thus there will be one counter per thread
 counter = -1
 
 request = function()
-   wrk.headers["raw"] = true
+   yrk.headers["raw"] = true
 
    path = "/" .. counter
-   wrk.headers["X-Counter"] = counter
+   yrk.headers["X-Counter"] = counter
 
    local packed = struct.pack('>I', counter)
 
-   wrk.body = '\xDE\xAD\xBE\xFE'..packed
+   yrk.body = '\xDE\xAD\xBE\xFE'..packed
 
    counter = counter + 1
 
-   return wrk.format(nil, path)
+   return yrk.format(nil, path)
 end
 
 struct = {}

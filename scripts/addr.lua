@@ -5,9 +5,9 @@ local addrs = nil
 
 function setup(thread)
    if not addrs then
-      addrs = wrk.lookup(wrk.host, wrk.port or "http")
+      addrs = yrk.lookup(yrk.host, yrk.port or "http")
       for i = #addrs, 1, -1 do
-         if not wrk.connect(addrs[i]) then
+         if not yrk.connect(addrs[i]) then
             table.remove(addrs, i)
          end
       end
@@ -18,5 +18,5 @@ end
 
 function init(args)
    local msg = "thread addr: %s"
-   print(msg:format(wrk.thread.addr))
+   print(msg:format(yrk.thread.addr))
 end
