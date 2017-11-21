@@ -4,11 +4,31 @@
   load when run on a single multi-core CPU. It combines a multithreaded
   design with scalable event notification systems such as epoll and kqueue.
 
-  An optional LuaJIT script can perform HTTP request generation, response
+  An optional LuaJIT script can perform HTTP or TCP request generation, response
   processing, and custom reporting. Details are available in SCRIPTING and
   several examples are located in [scripts/](scripts/).
 
-## Basic Usage
+## TCP Basic Usage
+
+    yak -t12 -c400 -d30s http://127.0.0.1:8080/index.html -s scripts/counter.lua
+
+  You could build your TCP payload in request function  
+
+  This runs a benchmark for 30 seconds, using 12 threads, and keeping
+  400 TCP connections open.
+
+  Output:
+
+    Running 30s test @ http://127.0.0.1:8080/index.html
+      12 threads and 400 connections
+      Thread Stats   Avg      Stdev     Max   +/- Stdev
+        Latency   635.91us    0.89ms  12.92ms   93.69%
+        Req/Sec    56.20k     8.07k   62.00k    86.54%
+      22464657 requests in 30.00s, 17.76GB read
+    Requests/sec: 748868.53
+    Transfer/sec:    606.33MB    
+
+## HTTP Basic Usage
 
     yak -t12 -c400 -d30s http://127.0.0.1:8080/index.html
 
