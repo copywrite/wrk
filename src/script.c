@@ -45,7 +45,7 @@ static const struct luaL_reg threadlib[] = {
     { NULL,         NULL                   }
 };
 
-lua_State *script_create(char *file, char *url, char **headers) {
+lua_State *script_create(char *file, char *url, char **headers, bool raw) {
     lua_State *L = luaL_newstate();
     luaL_openlibs(L);
     (void) luaL_dostring(L, "wrk = require \"wrk\"");
@@ -60,6 +60,7 @@ lua_State *script_create(char *file, char *url, char **headers) {
     struct http_parser_url parts = {};
     script_parse_url(url, &parts);
     char *path = "/";
+    char *tcp = raw ? "true" : "false";
 
     if (parts.field_set & (1 << UF_PATH)) {
         path = &url[parts.field_data[UF_PATH].off];
@@ -69,6 +70,7 @@ lua_State *script_create(char *file, char *url, char **headers) {
         { "lookup",  LUA_TFUNCTION, script_wrk_lookup  },
         { "connect", LUA_TFUNCTION, script_wrk_connect },
         { "path",    LUA_TSTRING,   path               },
+        { "raw",     LUA_TSTRING,   tcp                },
         { NULL,      0,             NULL               },
     };
 
@@ -279,7 +281,8 @@ size_t script_verify_request(lua_State *L) {
 
     size_t parsed = http_parser_execute(&parser, &settings, request, len);
 
-    if (parsed != len || count == 0) {
+    /* disable script_verify_request */
+    if (false && (parsed != len || count == 0)) {
         enum http_errno err = HTTP_PARSER_ERRNO(&parser);
         const char *desc = http_errno_description(err);
         const char *msg = err != HPE_OK ? desc : "incomplete request";

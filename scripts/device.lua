@@ -1,26 +1,3 @@
--- example dynamic request script which demonstrates changing
--- the request path and a header for each request
--------------------------------------------------------------
--- NOTE: each wrk thread has an independent Lua scripting
--- context and thus there will be one counter per thread
-
-counter = -1
-
-request = function()
-   wrk.headers["raw"] = true
-
-   path = "/" .. counter
-   wrk.headers["X-Counter"] = counter
-
-   local packed = struct.pack('>I', counter)
-
-   wrk.body = '\xDE\xAD\xBE\xFE'..packed
-
-   counter = counter + 1
-
-   return wrk.format(nil, path)
-end
-
 struct = {}
 
 function struct.pack(format, ...)
@@ -194,3 +171,33 @@ function struct.unpack(format, stream)
 
   return unpack(vars)
 end
+
+function hex_dump (str)
+    local len = string.len( str )
+    local dump = ""
+    local hex = ""
+    local asc = ""
+    
+    for i = 1, len do
+        if 1 == i % 8 then
+            dump = dump .. hex .. asc .. "\n"
+            hex = string.format( "%04x: ", i - 1 )
+            asc = ""
+        end
+        
+        local ord = string.byte( str, i )
+        hex = hex .. string.format( "%02x ", ord )
+        if ord >= 32 and ord <= 126 then
+            asc = asc .. string.char( ord )
+        else
+            asc = asc .. "."
+        end
+    end
+
+    
+    return dump .. hex
+            .. string.rep( "   ", 8 - len % 8 ) .. asc
+end
+
+local packed = struct.pack('>I', 4)
+print(hex_dump('\xAA'..packed))
